@@ -1,0 +1,55 @@
+<html>
+	<head>
+		<title>Tickets</title>
+		<script src="//code.jquery.com/jquery-1.11.2.min.js"></script> 
+
+		<script type="text/javascript">
+			$(document).ready(function(){
+				// serach fro category  will be done on select-control by reloading index with selected category as url parameter
+				$('#selectCategories').change(function(){
+					var cat_val = $(this).val();
+					var index_url = "{% url 'index' 99999999 %}";
+			    	index_url = index_url.replace('99999999', cat_val);
+			    	window.location =index_url;
+				});
+
+				// select category value which is selected by user
+				{% if selected_category %}
+					$('#selectCategories').val('{{selected_category}}');
+				{% endif %}
+			});
+		</script>
+	</head>
+	<body>
+		<a href="{% url 'ticket_add' %}" />Add New </a><br/><br/>
+
+		Search: Category 
+		<select id="selectCategories">
+			<option value="">All</option>
+		{% for k,v in categories %}
+			<option value="{{k}}">{{v}}</option>
+		{% endfor %}
+		</select>
+
+		<br/>{{ ticket_count }} tickets found.<br/><br/>
+
+		<table border=1 margin=5 padding=15>
+			<tr>
+				<th>Title</th>
+				<th>Content</th>
+				<th>Author</th>
+				<th>Created On</th>
+				<th>Category</th>
+			</tr>
+			{% for ticket in tickets %}
+			<tr>
+				<td><a href="{% url 'ticket_view' ticket.id %}" >{{ ticket.title }}</a></td>
+				<td>{{ ticket.content }}</td>
+				<td>{{ ticket.author }}</td>
+				<td>{{ ticket.created_on }}</td>
+				<td>{{ ticket.category|default_if_none:""  }}</td> 
+			</tr>
+			{% endfor%}
+		</table>
+	</body>
+</html>
